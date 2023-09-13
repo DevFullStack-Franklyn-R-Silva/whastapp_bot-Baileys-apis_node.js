@@ -13,11 +13,12 @@
   "author": "hadefranklyn",
   "license": "ISC",
   "dependencies": {
-    "@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",      
+    "@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",
     "eslint": "^8.14.0",
     "express": "^4.18.1",
     "express-fileupload": "^1.4.0",
     "ffmpeg": "^0.0.4",
+    "fs": "^0.0.1-security",
     "jest": "^28.0.3",
     "jimp": "^0.16.1",
     "link-preview-js": "^2.1.13",
@@ -25,6 +26,7 @@
     "qrcode": "^1.5.1",
     "qrcode-terminal": "^0.12.0",
     "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "sharp": "^0.29.3",
     "socket.io": "^4.5.0"
   }

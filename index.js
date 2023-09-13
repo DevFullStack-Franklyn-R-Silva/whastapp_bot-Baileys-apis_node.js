@@ -26,6 +26,8 @@ const fileUpload = require("express-fileupload");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = require("express")();
+const rp = require("request-promise");
+
 // enable files upload
 app.use(
     fileUpload({
@@ -112,42 +114,99 @@ async function connectToWhatsApp() {
         }
     });
 
-    // sock.ev.on("messages.upsert", async ({ messages, type }) => {
-    //     try {
-    //         if (type === "notify") {
-    //             if (!messages[0]?.key.fromMe) {
-    //                 const captureMessage = messages[0]?.message?.conversation;
-    //                 const numberWa = messages[0]?.key?.remoteJid;
+    sock.ev.on("messages.upsert", async ({ messages, type }) => {
+        try {
+            if (type === "notify") {
+                if (!messages[0]?.key.fromMe) {
+                    const captureMessage = messages[0]?.message?.conversation;
+                    const numberWa = messages[0]?.key?.remoteJid;
+                    // const compareMessage = captureMessage.toLocaleLowerCase();
+                    // console.log()
+                    console.log(messages)
 
-    //                 const compareMessage = captureMessage.toLocaleLowerCase();
+                    // Verifique se é uma mensagem de grupo (contém "@g.us")
+                    if (!numberWa.includes("@g.us")) {
+                        console.log(
+                            "Ignorando mensagem de grupo:",
+                            captureMessage
+                        );
+                        const m = messages[0]
+                        const messageType = Object.keys (m.message)[0]
+                       console.log(typeof(messageType));
+                        // console.log(messages[0]?.message?.imageMessage)
+                        // Se houver uma imagem na mensagem
+                        // if (messages[0]?.message?.imageMessage) {
+                        //     const imageUrl = messages[0].message.imageMessage.url;
 
-    //                 if (compareMessage === "ping") {
-    //                     await sock.sendMessage(
-    //                         numberWa,
-    //                         {
-    //                             text: "Pong",
-    //                         },
-    //                         {
-    //                             quoted: messages[0],
-    //                         }
-    //                     );
-    //                 } else {
-    //                     await sock.sendMessage(
-    //                         numberWa,
-    //                         {
-    //                             text: "Eu sou um robô",
-    //                         },
-    //                         {
-    //                             quoted: messages[0],
-    //                         }
-    //                     );
-    //                 }
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.log("error ", error);
-    //     }
-    // });
+                        //     // Faça o download da imagem
+                        //     const imageBuffer = await rp.get({ url: imageUrl, encoding: null });
+
+                        //     // Converta a imagem em base64
+                        //     const imageBase64 = imageBuffer.toString('base64');
+
+                        //     // Faça o que quiser com a imagem em base64
+                        //     console.log("Imagem em base64:", imageBase64);
+                        // }
+
+                        // Se houver uma imagem na mensagem
+                        // if (messages[0]?.message?.imageMessage) {
+                        //     const imageUrl =
+                        //         messages[0].message.imageMessage.url;
+
+                        //     // Faça o download da imagem
+                        //     const imageResponse = await fetch(imageUrl);
+                        //     const imageBuffer = await imageResponse.buffer();
+
+                        //     // Converta a imagem em base64
+                        //     const imageBase64 = imageBuffer.toString("base64");
+
+                        //     // Faça o que quiser com a imagem em base64
+                        //     console.log("Imagem em base64:", imageBase64);
+
+                        //     // Salve a imagem em base64 em um arquivo (opcional)
+                        //     fs.writeFileSync(
+                        //         "imagem_base64.txt",
+                        //         imageBase64,
+                        //         "base64"
+                        //     );
+                        // }
+
+                        const compareMessage =
+                            captureMessage.toLocaleLowerCase();
+                        // console.log(messages);
+
+                        // console.log( "Nome no Whatssapp: ("+messages[0].pushName+")")
+                        // let novoTexto = "+"+ numberWa.replace("@s.whatsapp.net", "")+")";
+                        // console.log("Número de telefone:  ("+novoTexto+")");
+                        // console.log("Mensagem enviada:\n  ("+captureMessage+")")
+                        // if (compareMessage === "ping") {
+                        //     await sock.sendMessage(
+                        //         numberWa,
+                        //         {
+                        //             text: "Pong",
+                        //         },
+                        //         {
+                        //             quoted: messages[0],
+                        //         }
+                        //     );
+                        // } else {
+                        //     await sock.sendMessage(
+                        //         numberWa,
+                        //         {
+                        //             text: "Eu sou um robô",
+                        //         },
+                        //         {
+                        //             quoted: messages[0],
+                        //         }
+                        //     );
+                        // }
+                    }
+                }
+            }
+        } catch (error) {
+            console.log("error ", error);
+        }
+    });
 
     sock.ev.on("creds.update", saveCreds);
 }
@@ -169,7 +228,10 @@ app.get("/send-message", async (req, res) => {
             });
         } else {
             numberWA = "55" + number + "@s.whatsapp.net";
-
+            console.log(
+                number +
+                    "---------------------------------------------------------------------------------------------------------"
+            );
             if (isConnected()) {
                 const exist = await sock.onWhatsApp(numberWA);
 
@@ -241,5 +303,3 @@ connectToWhatsApp().catch((err) => console.log("erro inesperado: " + err)); // c
 server.listen(port, () => {
     console.log("Servidor Rodando na Porta: " + port);
 });
-
-
