@@ -1,7 +1,7 @@
 {
-  "name": "tutorial_baileys",
-  "version": "1.0.0",
-  "description": "whatsapp bot / apis",
+  "name": "whastapp_bot_baileys_api_node_js",
+  "version": "1.0.1",
+  "description": "Este projeto é uma aplicação de servidor para WhatsApp que permite aos usuários se conectar à plataforma de mensagens WhatsApp por meio de uma interface web. Ele oferece funcionalidades como enviar mensagens, receber notificações e interagir automaticamente com mensagens recebidas. A aplicação também exibe um código QR dinâmico para a autenticação, permitindo que os usuários escaneiem facilmente para se conectar. Além disso, o projeto inclui recursos de gerenciamento de desconexão e reconexão automática para garantir uma experiência contínua de uso do WhatsApp. É uma solução versátil e prática para automação de tarefas e comunicação por meio do WhatsApp.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
