@@ -14,6 +14,7 @@ const {
     MessageRetryMap,
     useMultiFileAuthState,
     msgRetryCounterMap,
+    downloadMediaMessage,
 } = require("@whiskeysockets/baileys");
 
 const log = (pino = require("pino"));
@@ -27,7 +28,10 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = require("express")();
 const rp = require("request-promise");
-
+const axios = require("axios");
+const { Buffer } = require("buffer");
+const request = require("request");
+const { writeFile } = require("fs/promises");
 // enable files upload
 app.use(
     fileUpload({
@@ -122,7 +126,7 @@ async function connectToWhatsApp() {
                     const numberWa = messages[0]?.key?.remoteJid;
                     // const compareMessage = captureMessage.toLocaleLowerCase();
                     // console.log()
-                    console.log(messages)
+                    console.log(messages);
 
                     // Verifique se é uma mensagem de grupo (contém "@g.us")
                     if (!numberWa.includes("@g.us")) {
@@ -130,9 +134,36 @@ async function connectToWhatsApp() {
                             "Ignorando mensagem de grupo:",
                             captureMessage
                         );
-                        const m = messages[0]
-                        const messageType = Object.keys (m.message)[0]
-                       console.log(typeof(messageType));
+                        const m = messages[0];
+
+                        // const imageUrl = m.message.imageMessage.url;
+                        // const imageUrl2 = m.message.imageMessage[0];
+                        // const imageUrl3 = m.message.messageContextInfo;
+                        // //     console.log(imageUrl2)
+                        //     console.log(imageUrl2)
+                        //     console.log(imageUrl3)
+                        const messageType = Object.keys(m.message)[0]; // get what type of message it is -- text, image, video
+                        // if the message is an image
+                        if (messageType === "imageMessage") {
+                            // download the message
+                            console.log(messageType)
+                            const buffer = await downloadMediaMessage(
+                                m,
+                                "buffer",
+                                {}
+                                
+                            );
+                            // save to file
+                             const base64String = buffer.toString('base64');
+                             const filePath = './base64data.txt';
+                             fs.writeFileSync(filePath, base64String, 'utf-8');
+                            await writeFile("./my-download.jpeg", buffer);
+                        }
+
+                        // Função para baixar e converter a imagem em base64
+
+                        // Chamar a função para baixar e converter a imagem em base64
+
                         // console.log(messages[0]?.message?.imageMessage)
                         // Se houver uma imagem na mensagem
                         // if (messages[0]?.message?.imageMessage) {
