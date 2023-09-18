@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes">
+    <title>WhatsApp API</title>
+    <meta name="description" content="WhatsApp API">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+    
+<div class="form">
+    <h1>WhatsApp API QR</h1>
+    <div id="qrcode-container">
+        <img src="./assets/loader.gif" alt="loading" id="qrcode" style="width: 250px;">
+    </div><!-- End qrcode-container -->
+    <div class="card">
+        <div class="body">
+            <p>
+                <li>Digitalize o seguinte código QR com seu aplicativo WhatsApp</li>
+                <h5 id="iduser"></h5>
+            </p>
+        </div><!-- End body -->
+    </div><!-- End card -->
+</div><!-- End form -->
+
+<!-- Inclua a biblioteca Socket.io -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js" crossorigin="anonymous"></script>
+<script>
+    // JavaScript para manipulação do QR Code e informações do usuário
+    const qrcode = document.getElementById("qrcode");
+    const iduser = document.getElementById("iduser");
+
+    // Inicialize o socket.io
+    const socket = io();
+
+    // Manipule eventos do socket.io
+    socket.on("qr", url => {
+        qrcode.setAttribute("src", url);
+    });
+
+    socket.on("qrstatus", src => {
+        qrcode.setAttribute("src", src);
+    });
+
+    socket.on("user", user => {
+        iduser.innerHTML = user;
+    });
+</script>
+</body>
+</html>

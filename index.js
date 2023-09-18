@@ -1,32 +1,20 @@
 const {
     default: makeWASocket,
-    MessageType,
-    MessageOptions,
-    Mimetype,
     DisconnectReason,
-    BufferJSON,
-    AnyMessageContent,
-    delay,
-    fetchLatestBaileysVersion,
-    isJidBroadcast,
-    makeCacheableSignalKeyStore,
-    makeInMemoryStore,
-    MessageRetryMap,
     useMultiFileAuthState,
-    msgRetryCounterMap,
 } = require("@whiskeysockets/baileys");
 
 const log = (pino = require("pino"));
 const { session } = { session: "session_auth_info" };
 const { Boom } = require("@hapi/boom");
 const path = require("path");
-const fs = require("fs");
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = require("express")();
-// enable files upload
+
+
 app.use(
     fileUpload({
         createParentPath: true,
@@ -41,10 +29,10 @@ const io = require("socket.io")(server);
 const port = process.env.PORT || 8000;
 const qrcode = require("qrcode");
 
-app.use("/assets", express.static(__dirname + "/client/assets"));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/scan", (req, res) => {
-    res.sendFile("./client/index.html", {
+    res.sendFile("./public/index.html", {
         root: __dirname,
     });
 });
@@ -241,5 +229,3 @@ connectToWhatsApp().catch((err) => console.log("erro inesperado: " + err)); // c
 server.listen(port, () => {
     console.log("Servidor Rodando na Porta: " + port);
 });
-
-
